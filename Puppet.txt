@@ -1,0 +1,38 @@
+   
+class cron-puppet {
+
+package { 'vim':
+  ensure => present,
+ }
+ 
+ package { 'curl':
+  ensure => present,
+ }
+ 
+ package { 'git':
+  ensure => present,
+ }
+ 
+ user { 'monitor':
+  ensure => present,
+  home => '/home/monitor/'
+  shell => '/bin/bash'
+ }
+ 
+ exec { 'get_script':
+  command => '/usr/bin/wget -q https://github.com/drsantos00/MemoryCheck.git | sudo bash,
+  creates => '/home/monitor/scripts/memory_check',
+  ensure => 'directory',
+ }
+ 
+ file { '/home/monitor/scr':
+  ensure => 'link',
+  target => '/home/monitor/scripts/memory_check',
+  
+  cron {'puppet-apply':
+    ensure => present,
+    command => '/etc/puppet apply /etc/puppet/modules/manifests/init.pp'
+    minute = '*/10'
+    }
+    
+  }
